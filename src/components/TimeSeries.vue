@@ -112,7 +112,9 @@ export default class TimeSeries extends Vue {
   }
 
   toggleDatasets(key: string) {
-    this.dataToggleMap.set(key, !this.dataToggleMap.get(key));
+    const tmpToggleMap = new Map(this.dataToggleMap);
+    tmpToggleMap.set(key, !this.dataToggleMap.get(key));
+    this.dataToggleMap = tmpToggleMap;
     if (this.timeSeriesChart) {
       if (this.timeSeriesChart.data.datasets) {
         const dataIndex = this.timeSeriesChart.data.datasets.findIndex(
