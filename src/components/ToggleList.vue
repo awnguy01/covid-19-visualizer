@@ -54,6 +54,7 @@ export default class ToggleList extends Vue {
   display: flex;
   flex-direction: column;
   margin-right: 1rem;
+  width: 245px;
 }
 
 #toggle-list {

@@ -8,20 +8,28 @@ import { URLStore } from '@/constants/urlStore';
 import { Watch } from 'vue-property-decorator';
 import { CountryCasesObject } from '@/models/CountryCasesObject';
 
+const INTERVAL = 1000 * 60 * 60;
+
 @Component
 export default class TimeSeries extends Vue {
   timeSeriesChart?: Chart;
   dataSource: CountryCasesObject[] = [];
   dataToggleMap = new Map<string, boolean>();
+  retrievalInterval: any;
 
   created() {
-    Axios.get(URLStore.CONFIRMED_CASES_URL).then((res: AxiosResponse) => {
-      this.dataSource = this.generateDataSource(res.data);
-    });
+    this.getDataSource();
+    this.retrievalInterval = setInterval(() => {
+      this.getDataSource();
+    }, INTERVAL);
+  }
+
+  beforeDestroy() {
+    clearInterval(this.retrievalInterval);
   }
 
   @Watch('dataSource')
-  onRawDataSourceChange() {
+  onDataSourceChange() {
     this.renderChart();
     this.refreshDataToggleMap();
   }
@@ -42,18 +50,23 @@ export default class TimeSeries extends Vue {
       data,
       options
     };
+    if (this.timeSeriesChart) {
+      this.timeSeriesChart.destroy();
+    }
     this.timeSeriesChart = new Chart(ctx, chartConfig);
   }
 
-  generateDataSource(rawCSV: string): CountryCasesObject[] {
-    return new CSV(rawCSV, {
-      cast: false,
-      header: true
-    })
-      .parse()
-      .map((rawCasesObj: any) =>
-        this.mapRawCasesDataToCountryCases(rawCasesObj)
-      );
+  getDataSource(): void {
+    Axios.get(URLStore.CONFIRMED_CASES_URL).then((res: AxiosResponse) => {
+      this.dataSource = new CSV(res.data, {
+        cast: false,
+        header: true
+      })
+        .parse()
+        .map((rawCasesObj: any) =>
+          this.mapRawCasesDataToCountryCases(rawCasesObj)
+        );
+    });
   }
 
   refreshDataToggleMap() {
