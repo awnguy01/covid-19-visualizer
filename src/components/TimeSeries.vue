@@ -7,6 +7,7 @@ import Axios, { AxiosResponse } from 'axios';
 import { URLStore } from '@/constants/urlStore';
 import { Watch } from 'vue-property-decorator';
 import { CountryCasesObject } from '@/models/CountryCasesObject';
+import { AppFns } from '@/utils/app-functions';
 
 const INTERVAL = 1000 * 60 * 60;
 
@@ -15,6 +16,7 @@ export default class TimeSeries extends Vue {
   timeSeriesChart?: Chart;
   dataSource: CountryCasesObject[] = [];
   dataToggleMap = new Map<string, boolean>();
+  dataColorMap = new Map<string, string>();
   retrievalInterval: any;
 
   created() {
@@ -90,6 +92,7 @@ export default class TimeSeries extends Vue {
       let dataVals: any[] = [];
       if (!reducedMap.has(country)) {
         dataVals = Array.from(casesObj.caseMap.values());
+        this.dataColorMap.set(country, AppFns.getRandomColor());
       } else {
         const origVals: number[] = reducedMap.get(country) as number[];
         dataVals = Array.from(casesObj.caseMap.values()).map(
@@ -102,7 +105,9 @@ export default class TimeSeries extends Vue {
     return Array.from(reducedMap.keys()).map((key: string) => ({
       label: key,
       data: reducedMap.get(key),
-      hidden: !this.dataToggleMap.get(key)
+      hidden: !this.dataToggleMap.get(key),
+      borderColor: this.dataColorMap.get(key),
+      fill: false
     }));
   }
 
@@ -146,9 +151,10 @@ export default class TimeSeries extends Vue {
   <div id="time-series">
     <ToggleList
       :toggleMap="dataToggleMap"
+      :colorMap="dataColorMap"
       @toggleChange="toggleDatasets($event)"
     ></ToggleList>
-    <canvas ref="time-series-chart" height="400" width="500"></canvas>
+    <canvas ref="time-series-chart" height="400" width="425"></canvas>
   </div>
 </template>
 
