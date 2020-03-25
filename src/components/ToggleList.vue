@@ -68,15 +68,12 @@ export default class ToggleList extends Vue {
     <ul id="toggle-list">
       <li v-for="key in toggleKeys" :key="key" v-bind:style="styleMap.get(key)">
         <span>
-          <input
-            type="checkbox"
-            :name="key"
+          <Checkbox
             :checked="toggleMap.get(key)"
+            :label="key"
+            :color="styleMap.get(key).borderColor"
             @change="toggleValue(key)"
-          />
-          <label :for="key">
-            {{ key }}
-          </label>
+          ></Checkbox>
         </span>
       </li>
     </ul>
@@ -106,6 +103,15 @@ export default class ToggleList extends Vue {
     margin: 0.25rem 0.25rem 0.25rem 0;
     border-radius: 2px;
     border-style: solid;
+  }
+
+  .toggle-list {
+    &__checkbox {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+    }
   }
 }
 </style>
