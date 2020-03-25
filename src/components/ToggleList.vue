@@ -1,7 +1,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { Prop, Watch } from 'vue-property-decorator';
+import { Prop } from 'vue-property-decorator';
 
 interface StyleMapObject {
   backgroundColor: string;
@@ -67,14 +67,12 @@ export default class ToggleList extends Vue {
     />
     <ul id="toggle-list">
       <li v-for="key in toggleKeys" :key="key" v-bind:style="styleMap.get(key)">
-        <span>
-          <Checkbox
-            :checked="toggleMap.get(key)"
-            :label="key"
-            :color="styleMap.get(key).borderColor"
-            @change="toggleValue(key)"
-          ></Checkbox>
-        </span>
+        <Checkbox
+          :checked="toggleMap.get(key)"
+          :label="key"
+          :color="styleMap.get(key).borderColor"
+          @change="toggleValue(key)"
+        ></Checkbox>
       </li>
     </ul>
   </div>

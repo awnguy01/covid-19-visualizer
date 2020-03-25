@@ -42,6 +42,7 @@ export default class Checkbox extends Vue {
   cursor: pointer;
   font-size: 0.85rem;
   user-select: none;
+  width: 100%;
 }
 
 /* Hide the browser's default checkbox */
