@@ -26,10 +26,12 @@ export default class ToggleList extends Vue {
     const styleMap = new Map<string, StyleMapObject>();
 
     this.colorMap.forEach((color: string, key: string) => {
-      const mappedColor: string = this.colorMap.get(key) || '#FFF';
+      const mappedColor: string | undefined = this.colorMap.get(key);
+      const styleColor: string =
+        mappedColor === undefined ? '#fff' : mappedColor;
       const styleObj: StyleMapObject = {
-        backgroundColor: this.toggleMap.get(key) ? mappedColor : '#FFF',
-        borderColor: mappedColor,
+        backgroundColor: this.toggleMap.get(key) ? styleColor : 'transparent',
+        borderColor: styleColor,
         color: this.toggleMap.get(key) ? '#FFF' : '#000'
       };
       styleMap.set(key, styleObj);
@@ -54,6 +56,14 @@ export default class ToggleList extends Vue {
   toggleValue(key: string) {
     this.$emit('toggleChange', key);
   }
+
+  resetFilter() {
+    this.filterVal = '';
+    const listEl: HTMLUListElement | null = this.$el.querySelector('ul');
+    const inputEl: HTMLInputElement | null = this.$el.querySelector('input');
+    listEl && listEl.scrollTo({ top: 0 });
+    inputEl && inputEl.focus();
+  }
 }
 </script>
 
@@ -66,7 +76,12 @@ export default class ToggleList extends Vue {
       v-model.trim="filterVal"
     />
     <ul id="toggle-list">
-      <li v-for="key in toggleKeys" :key="key" v-bind:style="styleMap.get(key)">
+      <li
+        v-for="key in toggleKeys"
+        :key="key"
+        v-bind:style="styleMap.get(key)"
+        @click="resetFilter()"
+      >
         <Checkbox
           :checked="toggleMap.get(key)"
           :label="key"

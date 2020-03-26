@@ -8,6 +8,7 @@ import { URLStore } from '@/constants/urlStore';
 import { Watch } from 'vue-property-decorator';
 import { CountryCasesObject } from '@/models/CountryCasesObject';
 import { AppFns } from '@/utils/app-functions';
+import randomColor from 'randomcolor';
 
 const INTERVAL = 1000 * 60 * 60;
 
@@ -45,7 +46,11 @@ export default class TimeSeries extends Vue {
     const data: Chart.ChartData = { labels, datasets };
     const options: Chart.ChartOptions = {
       responsive: false,
-      legend: { position: 'bottom', fullWidth: true, display: false }
+      legend: { position: 'bottom', fullWidth: true, display: false },
+      scales: {
+        xAxes: [{ ticks: { fontColor: '#fff' } }],
+        yAxes: [{ ticks: { fontColor: '#fff' } }]
+      }
     };
     const chartConfig: Chart.ChartConfiguration = {
       type: 'line',
@@ -92,7 +97,7 @@ export default class TimeSeries extends Vue {
       let dataVals: any[] = [];
       if (!reducedMap.has(country)) {
         dataVals = Array.from(casesObj.caseMap.values());
-        this.dataColorMap.set(country, AppFns.getRandomColor());
+        // this.dataColorMap.set(country, AppFns.getRandomColor());
       } else {
         const origVals: number[] = reducedMap.get(country) as number[];
         dataVals = Array.from(casesObj.caseMap.values()).map(
@@ -101,6 +106,8 @@ export default class TimeSeries extends Vue {
       }
       reducedMap.set(country, dataVals);
     });
+
+    this.assignColors(Array.from(reducedMap.keys()));
 
     return Array.from(reducedMap.keys()).map((key: string) => ({
       label: key,
@@ -143,6 +150,16 @@ export default class TimeSeries extends Vue {
       }
       this.timeSeriesChart.update();
     }
+  }
+
+  assignColors(keys: string[]) {
+    const colors = randomColor({
+      count: keys.length,
+      luminosity: 'dark'
+    });
+    keys.forEach((key: string, index: number) => {
+      this.dataColorMap.set(key, colors[index]);
+    });
   }
 }
 </script>
