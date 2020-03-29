@@ -196,7 +196,12 @@ export default class TimeSeries extends Vue {
         :colorMap="dataColorMap"
         @toggleChange="toggleDatasets($event)"
       ></ToggleList>
-      <canvas ref="time-series-chart" height="400" width="425"></canvas>
+      <canvas
+        id="timeSeriesCanvas"
+        ref="time-series-chart"
+        height="400"
+        width="425"
+      ></canvas>
     </div>
   </div>
 </template>
@@ -206,6 +211,10 @@ export default class TimeSeries extends Vue {
   display: flex;
   justify-content: center;
   flex-direction: column;
+}
+
+#timeSeriesCanvas {
+  margin: 1rem;
 }
 
 #content {
