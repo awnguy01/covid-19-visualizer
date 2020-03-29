@@ -211,6 +211,7 @@ export default class TimeSeries extends Vue {
 #content {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .input-field {
