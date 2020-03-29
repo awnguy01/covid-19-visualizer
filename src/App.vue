@@ -6,17 +6,6 @@
       <router-link to="/about">About</router-link>
     </nav>
     <router-view />
-    <div id="footer">
-      <!-- <span>
-        <a href="https://github.com/CSSEGISandData/COVID-19" target="_blank"
-          >Data</a
-        >&nbsp;adapted from the CSSE at Johns Hopkins University
-      </span>
-      <span>
-        Disclaimer: Information intended only for personal use and not
-        guaranteed for business or government decision-making
-      </span> -->
-    </div>
   </div>
 </template>
 
