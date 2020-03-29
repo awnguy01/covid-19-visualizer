@@ -2,41 +2,32 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import Chart from 'chart.js';
-import CSV from 'comma-separated-values';
-import Axios, { AxiosResponse } from 'axios';
-import { URLStore } from '@/constants/urlStore';
-import { Watch } from 'vue-property-decorator';
-import { CountryCasesObject } from '@/models/CountryCasesObject';
-import { AppFns } from '@/utils/app-functions';
+import { Watch, Prop } from 'vue-property-decorator';
 import randomColor from 'randomcolor';
-
-const INTERVAL = 1000 * 60 * 60;
-const DEFAULT_MIN_CASES = 1000;
 
 @Component
 export default class TimeSeries extends Vue {
+  @Prop({ default: () => new Map() })
+  dataMap!: Map<string, number[]>;
+
+  @Prop({ default: () => [] })
+  dataLabels!: string[];
+
+  @Prop({ default: 0 })
+  relevantCasesThreshold!: number;
+
   timeSeriesChart?: Chart;
-  dataSource: CountryCasesObject[] = [];
   dataToggleMap = new Map<string, boolean>();
   dataColorMap = new Map<string, string>();
   retrievalInterval: any;
-  relevantCasesThreshold = DEFAULT_MIN_CASES;
 
-  cachedLabels: string[] = [];
   cachedDatasets: Chart.ChartDataSets[] = [];
-
-  created() {
-    this.getDataSource();
-    this.retrievalInterval = setInterval(() => {
-      this.getDataSource();
-    }, INTERVAL);
-  }
 
   beforeDestroy() {
     clearInterval(this.retrievalInterval);
   }
 
-  @Watch('dataSource')
+  @Watch('dataMap')
   onDataSourceChange() {
     this.renderChart();
     this.refreshDataToggleMap();
@@ -64,11 +55,10 @@ export default class TimeSeries extends Vue {
 
   renderChart() {
     const ctx = this.$refs['time-series-chart'] as HTMLCanvasElement;
-    this.cachedDatasets = this.mapToChartDatasets(this.dataSource);
+    this.cachedDatasets = this.mapToChartDatasets(this.dataMap);
 
-    this.cachedLabels = Array.from(this.dataSource[0].caseMap.keys());
     const data: Chart.ChartData = {
-      labels: this.cachedLabels,
+      labels: this.dataLabels,
       datasets: this.cachedDatasets
     };
     const options: Chart.ChartOptions = {
@@ -90,77 +80,24 @@ export default class TimeSeries extends Vue {
     this.timeSeriesChart = new Chart(ctx, chartConfig);
   }
 
-  getDataSource(): void {
-    Axios.get(URLStore.CONFIRMED_CASES_URL).then((res: AxiosResponse) => {
-      this.dataSource = new CSV(res.data, {
-        cast: false,
-        header: true
-      })
-        .parse()
-        .map((rawCasesObj: any) =>
-          this.mapRawCasesDataToCountryCases(rawCasesObj)
-        );
-    });
-  }
-
   refreshDataToggleMap() {
     const tmpToggleMap = new Map<string, boolean>();
-    this.dataSource.forEach((casesObj: CountryCasesObject) => {
-      const country: string = casesObj.countryOrRegion;
-      tmpToggleMap.set(
-        country,
-        (this.dataToggleMap.get(country) as boolean) || false
-      );
+    this.dataMap.forEach((_, key: string) => {
+      tmpToggleMap.set(key, (this.dataToggleMap.get(key) as boolean) || false);
     });
     this.dataToggleMap = tmpToggleMap;
   }
 
-  mapToChartDatasets(
-    countryCasesList: CountryCasesObject[]
-  ): Chart.ChartDataSets[] {
-    const reducedMap = new Map<string, number[]>();
-    countryCasesList.forEach((casesObj: CountryCasesObject) => {
-      const country: string = casesObj.countryOrRegion;
-      let dataVals: any[] = [];
-      if (!reducedMap.has(country)) {
-        dataVals = Array.from(casesObj.caseMap.values());
-        // this.dataColorMap.set(country, AppFns.getRandomColor());
-      } else {
-        const origVals: number[] = reducedMap.get(country) as number[];
-        dataVals = Array.from(casesObj.caseMap.values()).map(
-          (caseVal: number, valIndex: number) => caseVal + origVals[valIndex]
-        );
-      }
-      reducedMap.set(country, dataVals);
-    });
+  mapToChartDatasets(dataMap: Map<string, number[]>): Chart.ChartDataSets[] {
+    this.assignColors(Array.from(dataMap.keys()));
 
-    this.assignColors(Array.from(reducedMap.keys()));
-
-    return Array.from(reducedMap.keys()).map((key: string) => ({
+    return Array.from(dataMap.keys()).map((key: string) => ({
       label: key,
-      data: reducedMap.get(key),
+      data: dataMap.get(key),
       hidden: !this.dataToggleMap.get(key),
       borderColor: this.dataColorMap.get(key),
       fill: false
     }));
-  }
-
-  mapRawCasesDataToCountryCases(rawCasesObj: any): CountryCasesObject {
-    const caseMap = new Map<string, number>();
-
-    Object.keys(rawCasesObj)
-      .filter((key: string) => RegExp(/^\d{1,2}\/\d{1,2}\/\d{1,2}$/).test(key))
-      .forEach((key: string) =>
-        caseMap.set(key.trim().slice(0, -3), +rawCasesObj[key])
-      );
-
-    return {
-      provinceOrState: rawCasesObj['Province/State'],
-      countryOrRegion: rawCasesObj['Country/Region'],
-      lat: rawCasesObj['Lat'],
-      long: rawCasesObj['Long'],
-      caseMap
-    };
   }
 
   toggleDatasets(key: string) {
@@ -186,7 +123,7 @@ export default class TimeSeries extends Vue {
   updateChartThreshold(): void {
     const minIndex = this.getMinRelevantIndex(this.chartDatasets);
 
-    this.chartLabels = this.cachedLabels.slice(minIndex);
+    this.chartLabels = this.dataLabels.slice(minIndex);
     this.chartDatasets = this.cachedDatasets.map(
       (dataset: Chart.ChartDataSets) => ({
         ...dataset,
