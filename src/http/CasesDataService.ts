@@ -4,16 +4,8 @@ import Axios, { AxiosResponse } from 'axios';
 import CSV from 'comma-separated-values';
 import { CountryCasesObject } from '@/models/CountryCasesObject';
 import { GitHubFileInfoObject } from '@/models/GitHubFileInfoObject';
-import {
-  US_STATES,
-  STATE_ABB_SET,
-  STATE_ABB_MAP,
-  STATE_SET
-} from '@/constants/states';
-import {
-  DailyReportObject,
-  createDailyReportObject
-} from '@/models/DailyReportObject';
+import { STATE_ABB_SET, STATE_ABB_MAP, STATE_SET } from '@/constants/states';
+import { DailyReportObject } from '@/models/DailyReportObject';
 
 const POSS_CTRY_REG_PROPS = ['Country_Region', 'Country/Region'];
 const POSS_PROV_STATE_PROPS = ['Province_State', 'Province/State'];
