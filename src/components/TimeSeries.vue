@@ -11,6 +11,7 @@ import { AppFns } from '@/utils/app-functions';
 import randomColor from 'randomcolor';
 
 const INTERVAL = 1000 * 60 * 60;
+const DEFAULT_MIN_CASES = 1000;
 
 @Component
 export default class TimeSeries extends Vue {
@@ -19,6 +20,10 @@ export default class TimeSeries extends Vue {
   dataToggleMap = new Map<string, boolean>();
   dataColorMap = new Map<string, string>();
   retrievalInterval: any;
+  relevantCasesThreshold = DEFAULT_MIN_CASES;
+
+  cachedLabels: string[] = [];
+  cachedDatasets: Chart.ChartDataSets[] = [];
 
   created() {
     this.getDataSource();
@@ -37,13 +42,35 @@ export default class TimeSeries extends Vue {
     this.refreshDataToggleMap();
   }
 
+  get chartLabels(): any[] {
+    return (this.timeSeriesChart && this.timeSeriesChart.data.labels) || [];
+  }
+
+  set chartLabels(labels: any[]) {
+    if (this.timeSeriesChart) {
+      this.timeSeriesChart.data.labels = labels;
+    }
+  }
+
+  get chartDatasets(): any[] {
+    return (this.timeSeriesChart && this.timeSeriesChart.data.datasets) || [];
+  }
+
+  set chartDatasets(datasets: any[]) {
+    if (this.timeSeriesChart) {
+      this.timeSeriesChart.data.datasets = datasets;
+    }
+  }
+
   renderChart() {
     const ctx = this.$refs['time-series-chart'] as HTMLCanvasElement;
-    const datasets: Chart.ChartDataSets[] = this.mapToChartDatasets(
-      this.dataSource
-    );
-    const labels: string[] = Array.from(this.dataSource[0].caseMap.keys());
-    const data: Chart.ChartData = { labels, datasets };
+    this.cachedDatasets = this.mapToChartDatasets(this.dataSource);
+
+    this.cachedLabels = Array.from(this.dataSource[0].caseMap.keys());
+    const data: Chart.ChartData = {
+      labels: this.cachedLabels,
+      datasets: this.cachedDatasets
+    };
     const options: Chart.ChartOptions = {
       responsive: false,
       legend: { position: 'bottom', fullWidth: true, display: false },
@@ -141,15 +168,71 @@ export default class TimeSeries extends Vue {
     tmpToggleMap.set(key, !this.dataToggleMap.get(key));
     this.dataToggleMap = tmpToggleMap;
     if (this.timeSeriesChart) {
-      if (this.timeSeriesChart.data.datasets) {
-        const dataIndex = this.timeSeriesChart.data.datasets.findIndex(
+      if (this.chartDatasets) {
+        const dataIndex = this.chartDatasets.findIndex(
           (dataSet: Chart.ChartDataSets) => dataSet.label === key
         );
-        const hidden = !this.dataToggleMap.get(key);
-        this.timeSeriesChart.data.datasets[dataIndex].hidden = hidden;
+        if (dataIndex !== -1) {
+          const hidden = !this.dataToggleMap.get(key);
+          this.chartDatasets[dataIndex].hidden = hidden;
+          this.updateChartThreshold();
+        }
       }
       this.timeSeriesChart.update();
     }
+  }
+
+  @Watch('relevantCasesThreshold')
+  updateChartThreshold(): void {
+    const minIndex = this.getMinRelevantIndex(this.chartDatasets);
+
+    this.chartLabels = this.cachedLabels.slice(minIndex);
+    this.chartDatasets = this.cachedDatasets.map(
+      (dataset: Chart.ChartDataSets) => ({
+        ...dataset,
+        data: (dataset.data && dataset.data.slice(minIndex)) || []
+      })
+    );
+    this.timeSeriesChart && this.timeSeriesChart.update();
+  }
+
+  getMinRelevantIndex(dataSets: Chart.ChartDataSets[]): number {
+    const visibleDatasets: Chart.ChartDataSets[] = dataSets.filter(
+      (dataSet: Chart.ChartDataSets) =>
+        !dataSet.hidden && dataSet.data && dataSet.data.some((val: any) => val)
+    );
+
+    if (!visibleDatasets.length) {
+      return 0;
+    }
+
+    let minIndex: number = (visibleDatasets[0].data as number[]).findIndex(
+      (val: number) => val > this.relevantCasesThreshold
+    );
+
+    if (minIndex === -1) {
+      const longestDataset: Chart.ChartDataSets = visibleDatasets.reduce(
+        (datasetA: Chart.ChartDataSets, datasetB: Chart.ChartDataSets) => {
+          const lengthA = (datasetA.data && datasetA.data.length) || 0;
+          const lengthB = (datasetB.data && datasetB.data.length) || 0;
+          return lengthA >= lengthB ? datasetA : datasetB;
+        }
+      );
+      minIndex = (longestDataset.data && longestDataset.data.length) || 0;
+    }
+
+    visibleDatasets.slice(1).forEach((dataset: Chart.ChartDataSets) => {
+      if (dataset.data) {
+        for (let i = 0; i < minIndex; i++) {
+          if ((dataset.data[i] as number) > this.relevantCasesThreshold) {
+            minIndex = i;
+            break;
+          }
+        }
+      }
+    });
+
+    return minIndex;
   }
 
   assignColors(keys: string[]) {
@@ -166,12 +249,18 @@ export default class TimeSeries extends Vue {
 
 <template>
   <div id="time-series">
-    <ToggleList
-      :toggleMap="dataToggleMap"
-      :colorMap="dataColorMap"
-      @toggleChange="toggleDatasets($event)"
-    ></ToggleList>
-    <canvas ref="time-series-chart" height="400" width="425"></canvas>
+    <span class="input-field">
+      Minimum Threshold&nbsp;
+      <input type="number" v-model="relevantCasesThreshold" />
+    </span>
+    <div id="content">
+      <ToggleList
+        :toggleMap="dataToggleMap"
+        :colorMap="dataColorMap"
+        @toggleChange="toggleDatasets($event)"
+      ></ToggleList>
+      <canvas ref="time-series-chart" height="400" width="425"></canvas>
+    </div>
   </div>
 </template>
 
@@ -179,5 +268,18 @@ export default class TimeSeries extends Vue {
 #time-series {
   display: flex;
   justify-content: center;
+  flex-direction: column;
+}
+
+#content {
+  display: flex;
+  justify-content: center;
+}
+
+.input-field {
+  margin-bottom: 1rem;
+  input {
+    width: 4.5rem;
+  }
 }
 </style>

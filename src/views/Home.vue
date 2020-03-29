@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <h1>
-      COVID-19 Cases By Country Over Time
+      COVID-19 Confirmed Cases By Country Over Time
     </h1>
     <TimeSeries></TimeSeries>
   </div>

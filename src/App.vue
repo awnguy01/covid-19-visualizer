@@ -1,10 +1,11 @@
 <template>
   <div id="app">
-    <!-- <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div> -->
     <router-view />
+    <div id="footer">
+      <a href="https://github.com/CSSEGISandData/COVID-19" target="_blank"
+        >Data</a
+      >&nbsp;provided by the CSSE at Johns Hopkins University
+    </div>
   </div>
 </template>
 
@@ -14,6 +15,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
+  height: 100%;
 }
 
 #nav {
@@ -27,5 +29,14 @@
       color: #42b983;
     }
   }
+}
+
+#footer {
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+  width: 100%;
+  align-items: flex-end;
+  padding-bottom: 0.5rem;
 }
 </style>
