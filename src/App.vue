@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <nav id="nav">
-      <router-link to="/global">Global Visualizer</router-link>
-      <router-link to="/us">US States Visualizer</router-link>
+      <router-link to="/global">Global</router-link>
+      <router-link to="/us">US States</router-link>
       <router-link to="/about">About</router-link>
     </nav>
     <router-view />
@@ -31,6 +31,7 @@ h1 {
     font-weight: bold;
     color: #5b80a4;
     margin: 0 1rem;
+    white-space: nowrap;
 
     &.router-link-exact-active {
       color: #42b983;

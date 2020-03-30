@@ -101,12 +101,15 @@ export default class ToggleList extends Vue {
 </template>
 
 <style lang="scss" scoped>
+$margin: 1rem;
 $borderProp: 1px solid #1c2834;
 
 #container {
   display: flex;
   flex-direction: column;
-  margin-right: 1rem;
+  margin-right: $margin;
+  margin-left: $margin;
+  margin-bottom: $margin;
   width: 225px;
   min-width: 225px;
   border: $borderProp;
