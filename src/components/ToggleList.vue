@@ -120,6 +120,7 @@ $borderProp: 1px solid #1c2834;
   min-width: 225px;
   border: $borderProp;
   border-radius: 5px;
+  min-height: 7rem;
   max-height: 27rem;
   padding: 1rem;
 }
