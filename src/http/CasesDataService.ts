@@ -59,7 +59,7 @@ export class CasesDataService {
   static get confirmedCases(): Promise<CountryCasesObject[]> {
     return Axios.get(URLStore.NETLIFY_LAMBDA_CONFIRMED_CASES_URL).then(
       (res: AxiosResponse) => {
-        return JSON.parse(res.data);
+        return res.data;
       }
     );
     // return Axios.get(URLStore.CONFIRMED_CASES_URL).then((res: AxiosResponse) =>
