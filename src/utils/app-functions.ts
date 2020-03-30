@@ -1,5 +1,5 @@
 export class AppFns {
   static get isMobile() {
-    return window.innerWidth <= 800 && window.innerHeight <= 600;
+    return screen.width <= 800 && screen.height <= 600;
   }
 }
