@@ -8,8 +8,8 @@ export class URLStore {
   /***** NETLIFY LAMBDA URLS *****/
 
   static NETLIFY_LAMBDA_CONFIRMED_CASES_URL =
-    '/.netlify/functions/confirmed-country-cases';
+    'https://virwatch.com/.netlify/functions/confirmed-country-cases';
 
   static NETLIFY_LAMBDA_DAILY_REPORTS_REPO_CONTENTS_URL =
-    '/.netlify/functions/daily-reports';
+    'https://virwatch.com/.netlify/functions/daily-reports';
 }
