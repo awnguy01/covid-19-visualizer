@@ -1,7 +1,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { CasesDataService } from '@/http/CasesDataService';
+import { NetlifyCasesDataService } from '@/http/NetlifyCasesDataService';
 import { CountryCasesObject } from '../models/CountryCasesObject';
 
 const INTERVAL = 1000 * 60 * 60;
@@ -26,13 +26,15 @@ export default class CountriesVisualizer extends Vue {
 
   updateLocalDataSource(): void {
     this.loading = true;
-    CasesDataService.confirmedCases.then((casesList: CountryCasesObject[]) => {
-      if (casesList.length) {
-        this.labels = Array.from(casesList[0].caseMap.keys());
-        this.dataSource = this.convertDataListToMap(casesList);
+    NetlifyCasesDataService.confirmedCases.then(
+      (casesList: CountryCasesObject[]) => {
+        if (casesList.length) {
+          this.labels = Array.from(casesList[0].caseMap.keys());
+          this.dataSource = this.convertDataListToMap(casesList);
+        }
+        this.loading = false;
       }
-      this.loading = false;
-    });
+    );
   }
 
   convertDataListToMap(casesList: CountryCasesObject[]): Map<string, number[]> {

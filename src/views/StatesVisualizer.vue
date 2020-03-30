@@ -1,7 +1,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { CasesDataService } from '@/http/CasesDataService';
+import { NetlifyCasesDataService } from '@/http/NetlifyCasesDataService';
 import { CountryCasesObject } from '@/models/CountryCasesObject';
 import { DailyReportObject } from '../models/DailyReportObject';
 import { STATE_SET } from '@/constants/states';
@@ -28,7 +28,7 @@ export default class StatesVisualizer extends Vue {
 
   updateLocalDataSource(): void {
     this.loading = true;
-    CasesDataService.dailyCasesReports.then(
+    NetlifyCasesDataService.dailyCasesReports.then(
       (dailyReportListGroups: DailyReportObject[][]) => {
         const stateCasesMap = new Map<string, number[]>(
           Array.from(STATE_SET).map((state: string) => [state, []])

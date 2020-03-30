@@ -14,7 +14,7 @@ const POSS_RECOVER_PROPS = ['Recovered'];
 const POSS_DEATH_PROPS = ['Deaths'];
 
 export class CasesDataService {
-  static get dailyCasesReports() {
+  static get dailyCasesReports(): Promise<DailyReportObject[][]> {
     let sortedUrls: string[] = [];
     return this.dailyReportsRepoContents
       .then((fileInfoObj: GitHubFileInfoObject[]) => {
@@ -57,17 +57,9 @@ export class CasesDataService {
   }
 
   static get confirmedCases(): Promise<CountryCasesObject[]> {
-    return Axios.get(URLStore.NETLIFY_LAMBDA_CONFIRMED_CASES_URL).then(
-      (res: AxiosResponse) => {
-        return res.data.map((casesObj: any) => ({
-          ...casesObj,
-          caseMap: new Map(JSON.parse(casesObj.caseMap))
-        }));
-      }
+    return Axios.get(URLStore.CONFIRMED_CASES_URL).then((res: AxiosResponse) =>
+      CasesDataService.convertCSVStringToCountryCasesList(res.data)
     );
-    // return Axios.get(URLStore.CONFIRMED_CASES_URL).then((res: AxiosResponse) =>
-    //   CasesDataService.convertCSVStringToCountryCasesList(res.data)
-    // );
   }
 
   private static parseDailyReportCSV(
