@@ -2,6 +2,7 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
+import { AppFns } from '@/utils/app-functions';
 
 interface StyleMapObject {
   backgroundColor: string;
@@ -31,7 +32,7 @@ export default class ToggleList extends Vue {
   mounted() {
     this.listEl = this.$el.querySelector('ul');
     this.filterInputEl = this.$el.querySelector('input');
-    this.filterInputEl && this.filterInputEl.focus();
+    !AppFns.isMobile && this.filterInputEl && this.filterInputEl.focus();
   }
 
   get styleMap(): Map<string, StyleMapObject> {
@@ -72,7 +73,7 @@ export default class ToggleList extends Vue {
   resetFilter() {
     this.filterVal = '';
     this.listEl && this.listEl.scrollTo({ top: 0 });
-    this.filterInputEl && this.filterInputEl.focus();
+    !AppFns.isMobile && this.filterInputEl && this.filterInputEl.focus();
   }
 }
 </script>
