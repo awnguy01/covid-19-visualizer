@@ -101,20 +101,26 @@ export default class ToggleList extends Vue {
 </template>
 
 <style lang="scss" scoped>
+$borderProp: 1px solid #1c2834;
+
 #container {
   display: flex;
   flex-direction: column;
   margin-right: 1rem;
   width: 225px;
   min-width: 225px;
+  border: $borderProp;
+  border-radius: 5px;
+  max-height: 380px;
+  padding: 1rem;
 }
 
 #toggle-list {
   padding: 0;
   list-style: none;
   text-align: left;
-  max-height: 360px;
   overflow: auto;
+  margin-bottom: 0;
 
   li {
     display: flex;
@@ -123,15 +129,6 @@ export default class ToggleList extends Vue {
     margin: 0.25rem 0.25rem 0.25rem 0;
     border-radius: 2px;
     border-style: solid;
-  }
-
-  .toggle-list {
-    &__checkbox {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      border-radius: 2px;
-    }
   }
 }
 </style>

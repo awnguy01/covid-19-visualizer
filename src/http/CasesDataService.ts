@@ -4,7 +4,7 @@ import Axios, { AxiosResponse } from 'axios';
 import CSV from 'comma-separated-values';
 import { CountryCasesObject } from '@/models/CountryCasesObject';
 import { GitHubFileInfoObject } from '@/models/GitHubFileInfoObject';
-import { STATE_ABB_SET, STATE_ABB_MAP, STATE_SET } from '@/constants/states';
+import { STATE_ABB_MAP } from '@/constants/states';
 import { DailyReportObject } from '@/models/DailyReportObject';
 
 const POSS_CTRY_REG_PROPS = ['Country_Region', 'Country/Region'];
