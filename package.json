@@ -5,7 +5,9 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "start:lambda": "netlify-lambda serve src/lambda",
+    "build:lambda": "netlify-lambda build src/lambda"
   },
   "dependencies": {
     "@types/chart.js": "^2.9.16",
@@ -14,6 +16,7 @@
     "chart.js": "^2.9.3",
     "comma-separated-values": "^3.6.4",
     "core-js": "^3.6.4",
+    "netlify-lambda": "^1.6.3",
     "randomcolor": "^0.5.4",
     "register-service-worker": "^1.6.2",
     "vue": "^2.6.11",

@@ -40,81 +40,6 @@ export class CasesDataService {
             dateList[dateIndex]
           );
         });
-
-        // console.log(dailyReportListGroups);
-
-        // const stateCasesMap = new Map<string, number[]>(
-        //   Array.from(STATE_SET).map((state: string) => [state, []])
-        // );
-
-        // dailyReportListGroups.forEach(
-        //   (dailyRepList: DailyReportObject[], dayIndex: number) => {
-        //     dailyRepList.forEach((dailyRepObj: DailyReportObject) => {
-        //       const state: string = dailyRepObj.provinceOrState;
-        //       if (stateCasesMap.has(state)) {
-        //         const casesList: number[] = stateCasesMap.get(state) || [];
-        //         casesList[dayIndex] = casesList[dayIndex - 1] || 0;
-        //         casesList[dayIndex] += +dailyRepObj.confirmed;
-        //         stateCasesMap.set(state, casesList);
-        //       }
-        //     });
-
-        //     const currDayCount = dayIndex + 1;
-
-        //     Array.from(stateCasesMap.keys()).forEach((key: string) => {
-        //       const casesList: number[] = stateCasesMap.get(key) || [];
-        //       if (casesList.length < currDayCount) {
-        //         for (let i = 0; i < currDayCount - casesList.length; i++) {
-        //           casesList.push(0);
-        //         }
-        //         stateCasesMap.set(key, casesList);
-        //       }
-        //     });
-        //   }
-        // );
-
-        // console.log(stateCasesMap);
-
-        // const countryCasesList: CountryCasesObject[] = Array.from(
-        //   stateCasesMap.keys()
-        // ).map((state: string) => {
-        //   return {
-        //     countryOrRegion: 'US',
-        //     provinceOrState: state,
-        //     caseMap: stateCasesMap.get(state) || [],
-        //     lat: 0,
-        //     long: 0
-        //   };
-        // });
-
-        // console.log(stateCasesMap);
-
-        // resList
-        //   .map((res: AxiosResponse) =>
-        //     CasesDataService.convertCSVStringToCountryCasesList(res.data)
-        //   )
-        //   .map((dailyCasesList: CountryCasesObject[]) => {
-        //     return dailyCasesList.filter(
-        //       (casesObj: CountryCasesObject) =>
-        //         casesObj.countryOrRegion.toUpperCase() === 'US'
-        //     );
-        //   })
-        //   .forEach((usCasesList: CountryCasesObject[]) => {
-        //     usCasesList.forEach((casesObj: CountryCasesObject) => {
-        //       const stateAbbRegExp = /^.*(, [A-Z]{2}){1}$/i;
-
-        //       if (stateCasesMap.has(casesObj.provinceOrState)) {
-        //         // console.log(`Found ${casesObj.provinceOrState}`);
-        //       } else if (stateAbbRegExp.test(casesObj.provinceOrState)) {
-        //         const abb: string = casesObj.provinceOrState.slice(-2);
-        //         const state: string = US_STATES.get(abb) as string;
-        //         // console.log(`Converting ${abb} to ${state}`);
-        //         // test
-        //       } else {
-        //         // console.log(`Could not find ${casesObj.provinceOrState}`);
-        //       }
-        //     });
-        //   });
       });
   }
 
@@ -132,9 +57,14 @@ export class CasesDataService {
   }
 
   static get confirmedCases(): Promise<CountryCasesObject[]> {
-    return Axios.get(URLStore.CONFIRMED_CASES_URL).then((res: AxiosResponse) =>
-      CasesDataService.convertCSVStringToCountryCasesList(res.data)
+    return Axios.get(URLStore.NETLIFY_LAMBDA_CONFIRMED_CASES_URL).then(
+      (res: AxiosResponse) => {
+        return JSON.parse(res.data);
+      }
     );
+    // return Axios.get(URLStore.CONFIRMED_CASES_URL).then((res: AxiosResponse) =>
+    //   CasesDataService.convertCSVStringToCountryCasesList(res.data)
+    // );
   }
 
   private static parseDailyReportCSV(
