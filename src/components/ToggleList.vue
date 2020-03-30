@@ -111,7 +111,7 @@ $borderProp: 1px solid #1c2834;
   min-width: 225px;
   border: $borderProp;
   border-radius: 5px;
-  max-height: 380px;
+  max-height: 405px;
   padding: 1rem;
 }
 

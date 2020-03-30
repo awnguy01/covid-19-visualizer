@@ -10,6 +10,8 @@
 </template>
 
 <style lang="scss">
+@import url('./styles/Tooltip.scss');
+
 h1 {
   margin: 1rem;
 }

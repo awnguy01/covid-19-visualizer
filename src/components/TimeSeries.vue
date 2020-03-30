@@ -23,6 +23,8 @@ export default class TimeSeries extends Vue {
 
   cachedDatasets: Chart.ChartDataSets[] = [];
 
+  helpMsg = 'Increase this to narrow the displayed data';
+
   beforeDestroy() {
     clearInterval(this.retrievalInterval);
   }
@@ -186,22 +188,28 @@ export default class TimeSeries extends Vue {
 
 <template>
   <div id="time-series">
-    <span class="input-field">
-      Minimum Threshold&nbsp;
-      <input type="number" v-model="relevantCasesThreshold" />
-    </span>
     <div id="content">
       <ToggleList
         :toggleMap="dataToggleMap"
         :colorMap="dataColorMap"
         @toggleChange="toggleDatasets($event)"
       ></ToggleList>
-      <canvas
-        id="timeSeriesCanvas"
-        ref="time-series-chart"
-        height="400"
-        width="425"
-      ></canvas>
+      <div>
+        <span class="input-field">
+          <span>Minimum Threshold&nbsp;</span>
+          <input type="number" v-model="relevantCasesThreshold" />
+          <span class="tooltip-bottom" :data-tooltip="helpMsg">
+            <i class="material-icons">help_outline</i>
+          </span>
+        </span>
+
+        <canvas
+          id="timeSeriesCanvas"
+          ref="time-series-chart"
+          height="400"
+          width="425"
+        ></canvas>
+      </div>
     </div>
   </div>
 </template>
@@ -224,9 +232,16 @@ export default class TimeSeries extends Vue {
 }
 
 .input-field {
-  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // margin-bottom: 1rem;
   input {
     width: 4.5rem;
+  }
+  * {
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
   }
 }
 </style>
