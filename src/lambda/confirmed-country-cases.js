@@ -26,7 +26,7 @@ function convertCSVStringToCountryCasesList(csvString) {
           rawCasesObj['Country/Region'] || rawCasesObj['Country_Region'] || '',
         lat: rawCasesObj['Lat'],
         long: rawCasesObj['Long'] || rawCasesObj['Long_'] || '',
-        caseMap
+        caseMap: JSON.stringify(Array.from(caseMap.entries))
       };
     });
 }
