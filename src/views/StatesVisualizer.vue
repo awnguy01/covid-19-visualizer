@@ -38,7 +38,8 @@ export default class StatesVisualizer extends Vue {
               const state: string = dailyRepObj.provinceOrState;
               if (stateCasesMap.has(state)) {
                 const casesList: number[] = stateCasesMap.get(state) || [];
-                casesList[dayIndex] = casesList[dayIndex - 1] || 0;
+                casesList[dayIndex] =
+                  casesList[dayIndex] || casesList[dayIndex - 1] || 0;
                 casesList[dayIndex] += +dailyRepObj.confirmed;
                 stateCasesMap.set(state, casesList);
               }
