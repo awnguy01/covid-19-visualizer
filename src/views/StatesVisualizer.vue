@@ -10,6 +10,7 @@ const INTERVAL = 1000 * 60 * 60;
 
 @Component
 export default class StatesVisualizer extends Vue {
+  loading = true;
   dataSource = new Map<string, number[]>();
   labels: string[] = [];
   retrievalInterval: any;
@@ -26,6 +27,7 @@ export default class StatesVisualizer extends Vue {
   }
 
   updateLocalDataSource(): void {
+    this.loading = true;
     CasesDataService.dailyCasesReports.then(
       (dailyReportListGroups: DailyReportObject[][]) => {
         const stateCasesMap = new Map<string, number[]>(
@@ -65,6 +67,7 @@ export default class StatesVisualizer extends Vue {
         );
 
         this.dataSource = stateCasesMap;
+        this.loading = false;
       }
     );
   }
@@ -92,6 +95,7 @@ export default class StatesVisualizer extends Vue {
       :dataMap="dataSource"
       :dataLabels="labels"
       :relevantCasesThreshold="0"
+      :loading="loading"
     ></TimeSeries>
   </div>
 </template>

@@ -8,6 +8,7 @@ const INTERVAL = 1000 * 60 * 60;
 
 @Component
 export default class CountriesVisualizer extends Vue {
+  loading = true;
   dataSource = new Map<string, number[]>();
   labels: string[] = [];
   retrievalInterval: any;
@@ -24,11 +25,13 @@ export default class CountriesVisualizer extends Vue {
   }
 
   updateLocalDataSource(): void {
+    this.loading = true;
     CasesDataService.confirmedCases.then((casesList: CountryCasesObject[]) => {
       if (casesList.length) {
         this.labels = Array.from(casesList[0].caseMap.keys());
         this.dataSource = this.convertDataListToMap(casesList);
       }
+      this.loading = false;
     });
   }
 
@@ -62,6 +65,7 @@ export default class CountriesVisualizer extends Vue {
       :dataMap="dataSource"
       :dataLabels="labels"
       :relevantCasesThreshold="1000"
+      :loading="loading"
     ></TimeSeries>
   </div>
 </template>

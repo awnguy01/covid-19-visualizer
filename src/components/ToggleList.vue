@@ -11,6 +11,9 @@ interface StyleMapObject {
 
 @Component
 export default class ToggleList extends Vue {
+  @Prop({ default: true })
+  loading!: boolean;
+
   @Prop({ default: () => new Map<string, boolean>() }) toggleMap!: Map<
     string,
     boolean
@@ -82,7 +85,10 @@ export default class ToggleList extends Vue {
       placeholder="Filter list..."
       v-model.trim="filterVal"
     />
-    <ul id="toggle-list">
+    <div v-if="loading" id="loading-list">
+      <vue-loaders-ball-triangle-path />
+    </div>
+    <ul v-else id="toggle-list">
       <li
         v-for="key in toggleKeys"
         :key="key"
@@ -114,7 +120,7 @@ $borderProp: 1px solid #1c2834;
   min-width: 225px;
   border: $borderProp;
   border-radius: 5px;
-  max-height: 405px;
+  max-height: 27rem;
   padding: 1rem;
 }
 
@@ -133,5 +139,12 @@ $borderProp: 1px solid #1c2834;
     border-radius: 2px;
     border-style: solid;
   }
+}
+
+#loading-list {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

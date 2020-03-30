@@ -7,6 +7,9 @@ import randomColor from 'randomcolor';
 
 @Component
 export default class TimeSeries extends Vue {
+  @Prop({ default: true })
+  loading!: boolean;
+
   @Prop({ default: () => new Map() })
   dataMap!: Map<string, number[]>;
 
@@ -79,7 +82,10 @@ export default class TimeSeries extends Vue {
     if (this.timeSeriesChart) {
       this.timeSeriesChart.destroy();
     }
-    this.timeSeriesChart = new Chart(ctx, chartConfig);
+
+    if (ctx) {
+      this.timeSeriesChart = new Chart(ctx, chartConfig);
+    }
   }
 
   refreshDataToggleMap() {
@@ -192,10 +198,13 @@ export default class TimeSeries extends Vue {
       <ToggleList
         :toggleMap="dataToggleMap"
         :colorMap="dataColorMap"
+        :loading="loading"
         @toggleChange="toggleDatasets($event)"
       ></ToggleList>
-      <div>
-        <span class="input-field">
+
+      <div id="chart-section">
+        <vue-loaders-ball-triangle-path v-if="loading" />
+        <span v-else class="input-field">
           <span>Minimum Threshold&nbsp;</span>
           <input type="number" v-model="relevantCasesThreshold" />
           <span class="tooltip-bottom" :data-tooltip="helpMsg">
@@ -208,6 +217,7 @@ export default class TimeSeries extends Vue {
           ref="time-series-chart"
           height="400"
           width="425"
+          v-bind:style="{ display: loading ? 'none' : 'block' }"
         ></canvas>
       </div>
     </div>
@@ -229,6 +239,30 @@ export default class TimeSeries extends Vue {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+}
+
+// @mixin chartStyles() {
+//   height: 29rem;
+//   border: 1px solid #1c2834;
+//   border-radius: 5px;
+// }
+
+// #chart-loader {
+//   @include chartStyles();
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// }
+
+#chart-section {
+  height: 29rem;
+  width: 425px;
+  border: 1px solid #1c2834;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .input-field {
