@@ -56,7 +56,9 @@ export default class ToggleList extends Vue {
   get toggleKeys() {
     return Array.from(this.toggleMap.keys())
       .filter((key: string) =>
-        key.toUpperCase().includes(this.filterVal.toUpperCase())
+        Array.from(this.filterVal.toLocaleUpperCase()).every((letter: string) =>
+          key.toLocaleUpperCase().includes(letter)
+        )
       )
       .sort((keyA: string, keyB: string) => {
         const checkedA: number = this.toggleMap.get(keyA) ? 1 : 0;

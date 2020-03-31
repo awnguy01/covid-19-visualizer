@@ -3,8 +3,11 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { NetlifyCasesDataService } from '@/http/NetlifyCasesDataService';
 import { CountryCasesObject } from '../models/CountryCasesObject';
+import { AppFns } from '../utils/app-functions';
 
 const INTERVAL = 1000 * 60 * 60;
+
+const ALT_COUNTRY_NAMES = new Map<string, string>([['US', 'United States']]);
 
 @Component
 export default class CountriesVisualizer extends Vue {
@@ -53,7 +56,7 @@ export default class CountriesVisualizer extends Vue {
       reducedMap.set(country, dataVals);
     });
 
-    return reducedMap;
+    return AppFns.adaptCountryNames(reducedMap, ALT_COUNTRY_NAMES);
   }
 }
 </script>
