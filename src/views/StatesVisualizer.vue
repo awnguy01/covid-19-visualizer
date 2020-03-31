@@ -89,7 +89,7 @@ export default class StatesVisualizer extends Vue {
 <template>
   <div>
     <h1>
-      COVID-19 Confirmed Cases By US States Over Time
+      COVID-19 Confirmed US Cases
     </h1>
     <TimeSeries
       :dataMap="dataSource"

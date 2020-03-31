@@ -61,7 +61,7 @@ export default class CountriesVisualizer extends Vue {
 <template>
   <div>
     <h1>
-      COVID-19 Confirmed Cases By Country Over Time
+      COVID-19 Confirmed Global Cases
     </h1>
     <TimeSeries
       :dataMap="dataSource"
