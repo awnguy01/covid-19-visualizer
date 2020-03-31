@@ -1,16 +1,17 @@
 <template>
   <div id="app">
     <nav id="nav">
-      <router-link to="/global">Global</router-link>
-      <router-link to="/us">US States</router-link>
+      <router-link to="/global">Global Cases</router-link>
+      <router-link to="/us">US Cases</router-link>
       <router-link to="/about">About</router-link>
     </nav>
-    <router-view />
+    <div id="routerViewWrapper">
+      <router-view />
+    </div>
   </div>
 </template>
 
 <style lang="scss">
-@import url('./styles/Tooltip.scss');
 h1 {
   margin: 1rem;
 }
@@ -24,6 +25,10 @@ h1 {
 }
 
 #nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  line-height: 2rem;
   padding: 0.5rem 0 0;
 
   a {
@@ -36,6 +41,10 @@ h1 {
       color: #42b983;
     }
   }
+}
+
+#routerViewWrapper {
+  margin: 1rem;
 }
 
 #footer {

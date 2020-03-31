@@ -241,24 +241,10 @@ export default class TimeSeries extends Vue {
   flex-wrap: wrap;
 }
 
-// @mixin chartStyles() {
-//   height: 29rem;
-//   border: 1px solid #1c2834;
-//   border-radius: 5px;
-// }
-
-// #chart-loader {
-//   @include chartStyles();
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-// }
-
 #chart-section {
+  @include borderStyle();
   height: 29rem;
   width: 425px;
-  border: 1px solid #1c2834;
-  border-radius: 5px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -269,7 +255,7 @@ export default class TimeSeries extends Vue {
   display: flex;
   justify-content: center;
   align-items: center;
-  // margin-bottom: 1rem;
+
   input {
     width: 4.5rem;
   }
