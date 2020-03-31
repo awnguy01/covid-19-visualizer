@@ -1,24 +1,11 @@
-# covid-19-visualizer
+# COVID-19 Tracker
 
-## Project setup
-```
-npm install
-```
+*Compare global and US COVID-19 cases with a simple to use interface.* 
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+**Built with VueJS and deployed on Netlify at https://virwatch.com**
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Using
+- [ChartJS](https://www.chartjs.org/)
+- [randomcolors](https://github.com/davidmerfield/randomColor) by David Merfield
+- [comma-separated-values](https://github.com/knrz/CSV.js) by Kash Nouroozi
+- [Data](https://github.com/CSSEGISandData/COVID-19) provided by John Hopkins University Center for Systems Science and Engineering
