@@ -1,3 +1,22 @@
 [build]
   functions = "lambda"
   command = "npm run build"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = true
+  
+[[headers]]
+  for = "/*"
+  [headers.values]
+  cache-control = '''
+  max-age=0,
+  no-cache,
+  no-store,
+  must-revalidate'''
+  pragma = "no-cache"
+  expires = "0"
+
+
