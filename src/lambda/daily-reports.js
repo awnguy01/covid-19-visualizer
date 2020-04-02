@@ -145,6 +145,7 @@ exports.handler = (event, context, callback) => {
     .then(dataList => {
       callback(null, {
         statusCode: 200,
+        headers: { 'Cache-Control': 'public, s-maxage=1800' },
         body: JSON.stringify(dataList)
       });
     })
