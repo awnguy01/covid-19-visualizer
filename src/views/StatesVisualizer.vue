@@ -51,9 +51,10 @@ export default class StatesVisualizer extends Vue {
 
             Array.from(stateCasesMap.keys()).forEach((key: string) => {
               const casesList: number[] = stateCasesMap.get(key) || [];
+              const lastVal: number = casesList[casesList.length - 1] || 0;
               if (casesList.length < currDayCount) {
                 for (let i = 0; i < currDayCount - casesList.length; i++) {
-                  casesList.push(0);
+                  casesList.push(lastVal);
                 }
                 stateCasesMap.set(key, casesList);
               }

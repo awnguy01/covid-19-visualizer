@@ -4,10 +4,9 @@ import Component from 'vue-class-component';
 import { NetlifyCasesDataService } from '@/http/NetlifyCasesDataService';
 import { CountryCasesObject } from '../models/CountryCasesObject';
 import { AppFns } from '../utils/app-functions';
+import { ALT_COUNTRY_NAMES } from '@/constants/altNames';
 
 const INTERVAL = 1000 * 60 * 60;
-
-const ALT_COUNTRY_NAMES = new Map<string, string>([['US', 'United States']]);
 
 @Component
 export default class CountriesVisualizer extends Vue {
