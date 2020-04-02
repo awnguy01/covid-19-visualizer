@@ -83,7 +83,7 @@ function parseProp(obj, propList) {
 }
 
 function parseDailyReportCSV(csvString, date) {
-  const rawParsedCSV = new CSV(csvString, {
+  const rawParsedCSV = new CSV(csvString.trim(), {
     cast: false,
     header: true
   }).parse();
