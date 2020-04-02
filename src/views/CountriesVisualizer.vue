@@ -68,7 +68,7 @@ export default class CountriesVisualizer extends Vue {
     <TimeSeries
       :dataMap="dataSource"
       :dataLabels="labels"
-      :relevantCasesThreshold="1000"
+      :relevantCasesThreshold="100"
       :loading="loading"
     ></TimeSeries>
   </div>
