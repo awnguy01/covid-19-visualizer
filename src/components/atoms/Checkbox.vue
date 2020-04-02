@@ -28,8 +28,12 @@ export default class Checkbox extends Vue {
       type="checkbox"
       :checked="checked"
       @change="$emit('change', $event)"
+      @focus="$emit('focus', $event)"
+      @blur="$emit('blur', $event)"
+      @keypress.enter="$emit('change')"
+      tabindex="0"
     />
-    <span class="checkmark" v-bind:style="checkStyle"> </span>
+    <span class="checkmark" v-bind:style="checkStyle" tabindex="-1"> </span>
     {{ label }}
   </label>
 </template>

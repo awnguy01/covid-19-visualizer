@@ -24,13 +24,12 @@ export default class ToggleList extends Vue {
     string
   >;
 
-  listEl: HTMLUListElement | null = null;
   filterInputEl: HTMLInputElement | null = null;
 
   filterVal = '';
+  focusedVal = '';
 
   mounted() {
-    this.listEl = this.$el.querySelector('ul');
     this.filterInputEl = this.$el.querySelector('input');
     !AppFns.isMobile && this.filterInputEl && this.filterInputEl.focus();
   }
@@ -72,9 +71,16 @@ export default class ToggleList extends Vue {
     this.$emit('toggleChange', key);
   }
 
+  highlightValue(key: string) {
+    this.focusedVal = key;
+  }
+
   resetFilter() {
     this.filterVal = '';
-    this.listEl && this.listEl.scrollTo({ top: 0 });
+    const toggleRef = this.$refs['toggle-list'] as HTMLUListElement;
+    if (toggleRef) {
+      toggleRef.scrollTop = 0;
+    }
     !AppFns.isMobile && this.filterInputEl && this.filterInputEl.focus();
   }
 }
@@ -91,11 +97,12 @@ export default class ToggleList extends Vue {
     <div v-if="loading" id="loading-list">
       <vue-loaders-ball-triangle-path />
     </div>
-    <ul v-else id="toggle-list">
+    <ul v-else id="toggle-list" ref="toggle-list">
       <li
         v-for="key in toggleKeys"
         :key="key"
         v-bind:style="styleMap.get(key)"
+        v-bind:class="{ highlighted: focusedVal === key }"
         @click="resetFilter()"
       >
         <Checkbox
@@ -103,6 +110,8 @@ export default class ToggleList extends Vue {
           :label="key"
           :color="styleMap.get(key).borderColor"
           @change="toggleValue(key)"
+          @focus="highlightValue(key)"
+          @blur="highlightValue('')"
         ></Checkbox>
       </li>
     </ul>
@@ -132,6 +141,7 @@ $margin: 1rem;
   text-align: left;
   overflow: auto;
   margin-bottom: 0;
+  scroll-behavior: smooth;
 
   li {
     display: flex;
@@ -140,6 +150,12 @@ $margin: 1rem;
     margin: 0.25rem 0.25rem 0.25rem 0;
     border-radius: 2px;
     border-style: solid;
+    position: relative;
+  }
+
+  li.highlighted,
+  li:hover {
+    opacity: 0.5;
   }
 }
 
