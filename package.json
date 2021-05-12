@@ -12,7 +12,7 @@
     "@types/chart.js": "^2.9.16",
     "@types/randomcolor": "^0.5.4",
     "axios": "^0.19.2",
-    "chart.js": "^2.9.3",
+    "chart.js": "^2.9.4",
     "comma-separated-values": "^3.6.4",
     "core-js": "^3.6.4",
     "netlify-lambda": "^1.6.3",
